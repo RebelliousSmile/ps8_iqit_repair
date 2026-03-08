@@ -1,0 +1,99 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="card-header-title">
+      {{ 'Preview: %type%'|trans({'%type%': type}, 'Modules.Sciqitrepair.Admin') }}
+    </h3>
+    <a href="{{ path('sc_iqit_repair_index') }}" class="btn btn-sm btn-outline-secondary">
+      &larr; {{ 'Back'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+    </a>
+  </div>
+  <div class="card-body">
+
+    {% if not result.success is defined or result.success == false %}
+      <div class="alert alert-danger">
+        {{ result.error|default('Unknown error') }}
+      </div>
+    {% else %}
+
+      <p class="text-muted">{{ result.description|default('') }}</p>
+
+      {# Summary #}
+      <div class="row mb-4">
+        <div class="col-sm-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2>{{ result.changes.total_charts|default(0) }}</h2>
+              <p class="text-muted mb-0">{{ 'Size charts'|trans({}, 'Modules.Sciqitrepair.Admin') }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2>{{ result.changes.total_shops|default(0) }}</h2>
+              <p class="text-muted mb-0">{{ 'Active shops'|trans({}, 'Modules.Sciqitrepair.Admin') }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h2>{{ result.changes.existing_associations|default(0) }}</h2>
+              <p class="text-muted mb-0">{{ 'Existing associations'|trans({}, 'Modules.Sciqitrepair.Admin') }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="card text-center {% if result.changes.missing_associations > 0 %}border-danger{% else %}border-success{% endif %}">
+            <div class="card-body">
+              <h2 class="{% if result.changes.missing_associations > 0 %}text-danger{% else %}text-success{% endif %}">
+                {{ result.changes.missing_associations|default(0) }}
+              </h2>
+              <p class="text-muted mb-0">{{ 'Missing associations'|trans({}, 'Modules.Sciqitrepair.Admin') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if result.changes.missing_associations == 0 %}
+        <div class="alert alert-success">
+          {{ 'All size chart associations are correct. No action needed.'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+        </div>
+      {% else %}
+        {# Missing entries table #}
+        <h5>{{ 'Entries to insert (%count%)'|trans({'%count%': result.entries_to_insert|length}, 'Modules.Sciqitrepair.Admin') }}</h5>
+        <table class="table table-sm table-bordered mb-4">
+          <thead class="thead-light">
+            <tr>
+              <th>{{ 'id_iqitsizechart'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+              <th>{{ 'id_shop'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in result.entries_to_insert %}
+            <tr>
+              <td>{{ entry.id_iqitsizechart }}</td>
+              <td>{{ entry.id_shop }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {# Apply form #}
+        <form method="post" action="{{ path('sc_iqit_repair_apply', {type: type}) }}">
+          <input type="hidden" name="_token" value="{{ csrfToken }}">
+          <button type="submit" class="btn btn-primary"
+                  onclick="return confirm('{{ 'Apply this fix? This will insert %count% associations.'|trans({'%count%': result.entries_to_insert|length}, 'Modules.Sciqitrepair.Admin') }}')">
+            <span class="material-icons" style="font-size:16px;vertical-align:middle">build</span>
+            {{ 'Apply Fix (%count% insertions)'|trans({'%count%': result.entries_to_insert|length}, 'Modules.Sciqitrepair.Admin') }}
+          </button>
+        </form>
+      {% endif %}
+
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

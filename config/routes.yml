@@ -1,0 +1,25 @@
+sc_iqit_repair_index:
+  path: /iqit-repair
+  methods: [GET]
+  defaults:
+    _controller: sc_iqit_repair.controller.iqit_repair::indexAction
+    _legacy_controller: AdminScIqitRepair
+    _legacy_link: AdminScIqitRepair
+
+sc_iqit_repair_preview:
+  path: /iqit-repair/fix/{type}/preview
+  methods: [GET]
+  defaults:
+    _controller: sc_iqit_repair.controller.iqit_repair::previewAction
+    _legacy_controller: AdminScIqitRepair
+  requirements:
+    type: sizechart_shop
+
+sc_iqit_repair_apply:
+  path: /iqit-repair/fix/{type}
+  methods: [POST]
+  defaults:
+    _controller: sc_iqit_repair.controller.iqit_repair::applyAction
+    _legacy_controller: AdminScIqitRepair
+  requirements:
+    type: sizechart_shop

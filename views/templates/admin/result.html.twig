@@ -1,0 +1,75 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="card-header-title">
+      {{ 'Result: %type%'|trans({'%type%': type}, 'Modules.Sciqitrepair.Admin') }}
+    </h3>
+    <a href="{{ path('sc_iqit_repair_index') }}" class="btn btn-sm btn-outline-secondary">
+      &larr; {{ 'Back to list'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+    </a>
+  </div>
+  <div class="card-body">
+
+    {% if not (result.success is defined and result.success) %}
+      <div class="alert alert-danger">
+        <strong>{{ 'Fix failed'|trans({}, 'Modules.Sciqitrepair.Admin') }}</strong><br>
+        {{ result.error|default('Unknown error') }}
+      </div>
+    {% else %}
+      <div class="alert alert-success">
+        {{ 'Fix applied successfully!'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+        {% if result.cache_cleared is defined and result.cache_cleared %}
+          {{ 'PrestaShop cache has been cleared.'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+        {% endif %}
+      </div>
+
+      {# Summary #}
+      <div class="row mb-4">
+        <div class="col-sm-4">
+          <div class="card text-center border-success">
+            <div class="card-body">
+              <h2 class="text-success">{{ result.inserted|default(0) }}</h2>
+              <p class="text-muted mb-0">{{ 'Associations inserted'|trans({}, 'Modules.Sciqitrepair.Admin') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Details table #}
+      {% if result.details is defined and result.details|length > 0 %}
+        <h5>{{ 'Details'|trans({}, 'Modules.Sciqitrepair.Admin') }}</h5>
+        <table class="table table-sm table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th>{{ 'id_iqitsizechart'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+              <th>{{ 'id_shop'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+              <th>{{ 'Action'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detail in result.details %}
+            <tr>
+              <td>{{ detail.id_iqitsizechart }}</td>
+              <td>{{ detail.id_shop }}</td>
+              <td><span class="badge badge-success">{{ detail.action }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+
+    {% endif %}
+
+    <div class="mt-3">
+      <a href="{{ path('sc_iqit_repair_preview', {type: type}) }}" class="btn btn-outline-secondary mr-2">
+        {{ 'Run preview again'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+      </a>
+      <a href="{{ path('sc_iqit_repair_index') }}" class="btn btn-outline-primary">
+        {{ 'Back to list'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

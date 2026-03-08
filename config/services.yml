@@ -1,0 +1,27 @@
+services:
+  _defaults:
+    public: true
+    autowire: true
+    autoconfigure: true
+
+  # Fixers
+  sc_iqit_repair.service.fixer.sizechart:
+    class: ScIqitRepair\Service\SizeChartFixer
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '%database_prefix%'
+
+  # Dispatcher
+  sc_iqit_repair.service.fixer_dispatcher:
+    class: ScIqitRepair\Service\IqitFixerDispatcher
+    arguments:
+      - '@sc_iqit_repair.service.fixer.sizechart'
+
+  # Controllers
+  sc_iqit_repair.controller.iqit_repair:
+    class: ScIqitRepair\Controller\Admin\IqitRepairController
+    arguments:
+      - '@sc_iqit_repair.service.fixer_dispatcher'
+      - '@security.csrf.token_manager'
+    calls:
+      - [setContainer, ['@service_container']]

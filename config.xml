@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>sc_iqit_repair</name>
+    <displayName><![CDATA[SC IQIT Repair]]></displayName>
+    <version><![CDATA[1.0.0]]></version>
+    <description><![CDATA[Diagnostic and repair tools for iqit* Warehouse theme modules]]></description>
+    <author><![CDATA[Scriptami]]></author>
+    <tab><![CDATA[administration]]></tab>
+    <is_configurable>0</is_configurable>
+    <need_instance>0</need_instance>
+    <limited_countries></limited_countries>
+</module>

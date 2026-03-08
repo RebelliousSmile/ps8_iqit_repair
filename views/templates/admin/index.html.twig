@@ -1,0 +1,77 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-header-title">{{ 'IQIT Repair'|trans({}, 'Modules.Sciqitrepair.Admin') }}</h3>
+  </div>
+  <div class="card-body">
+
+    {# Detected iqit* modules status #}
+    <h4>{{ 'Detected IQIT Modules'|trans({}, 'Modules.Sciqitrepair.Admin') }}</h4>
+    <table class="table table-sm mb-4">
+      <thead>
+        <tr>
+          <th>{{ 'Module'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+          <th>{{ 'Status'|trans({}, 'Modules.Sciqitrepair.Admin') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for module in detected_modules %}
+        <tr>
+          <td>{{ module.label }} <small class="text-muted">({{ module.name }})</small></td>
+          <td>
+            {% if module.installed %}
+              <span class="badge badge-success">{{ 'Installed'|trans({}, 'Modules.Sciqitrepair.Admin') }}</span>
+            {% else %}
+              <span class="badge badge-secondary">{{ 'Not installed'|trans({}, 'Modules.Sciqitrepair.Admin') }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {# Available fixes #}
+    <h4>{{ 'Available Repairs'|trans({}, 'Modules.Sciqitrepair.Admin') }}</h4>
+    {% if fixes is empty %}
+      <div class="alert alert-info">
+        {{ 'No repairs available. Install iqit* modules first.'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+      </div>
+    {% else %}
+      <div class="row">
+        {% for fix in fixes %}
+        <div class="col-md-6 mb-3">
+          <div class="card {% if not fix.module_available %}bg-light{% endif %}">
+            <div class="card-body">
+              <div class="d-flex align-items-start">
+                <span class="material-icons mr-3">{{ fix.icon }}</span>
+                <div class="flex-grow-1">
+                  <h5 class="card-title mb-1">{{ fix.title }}</h5>
+                  <p class="card-text text-muted small mb-2">{{ fix.description }}</p>
+                  <span class="badge badge-{% if fix.severity == 'high' %}danger{% elseif fix.severity == 'medium' %}warning{% else %}info{% endif %} mb-2">
+                    {{ fix.severity }}
+                  </span>
+                  {% if not fix.module_available %}
+                    <div class="alert alert-warning py-1 px-2 small mb-0">
+                      {{ 'Module %module% is not installed'|trans({'%module%': fix.module}, 'Modules.Sciqitrepair.Admin') }}
+                    </div>
+                  {% else %}
+                    <a href="{{ path('sc_iqit_repair_preview', {type: fix.type}) }}"
+                       class="btn btn-sm btn-outline-primary">
+                      <span class="material-icons" style="font-size:16px;vertical-align:middle">preview</span>
+                      {{ 'Preview'|trans({}, 'Modules.Sciqitrepair.Admin') }}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
