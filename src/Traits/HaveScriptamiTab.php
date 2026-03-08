@@ -37,7 +37,7 @@ trait HaveScriptamiTab
     /**
      * Name shown in the menu for this module's child tab (per language)
      */
-    private array $moduleTabNames = [
+    protected array $moduleTabNames = [
         'en' => 'IQIT Repair',
         'fr' => 'Réparation IQIT',
     ];
@@ -45,7 +45,7 @@ trait HaveScriptamiTab
     /**
      * Class name of this module's admin controller
      */
-    private string $moduleControllerClass = 'AdminScIqitRepair';
+    protected string $moduleControllerClass = 'AdminScIqitRepair';
 
     /**
      * Class name of the shared Scriptami parent tab
